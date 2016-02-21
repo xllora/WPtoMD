@@ -3,11 +3,13 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 
 	"github.com/xllora/WPtoMD/convert"
 	"github.com/xllora/WPtoMD/io"
+	"github.com/xllora/WPtoMD/markdown"
 )
 
 func main() {
@@ -27,5 +29,12 @@ func main() {
 		fmt.Fprintf(os.Stderr, "Failed to convert XML export with error: %v", err)
 		os.Exit(1)
 	}
-	fmt.Println(data)
+	buff := bytes.NewBufferString("")
+	for _, item := range data.Channel.Items {
+		if err := markdown.ToFrontMatter(buff, markdown.TOML, &item); err != nil {
+			fmt.Fprintf(os.Stderr, "Failed to convert item to MD with error: %v", err)
+			os.Exit(1)
+		}
+	}
+	fmt.Println(buff.String())
 }

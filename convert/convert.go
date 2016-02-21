@@ -11,15 +11,19 @@ type WPExport struct {
 
 // Channel contains the blog information.
 type Channel struct {
-	Title       string   `xml:"title"`
-	Link        string   `xml:"link"`
-	Description string   `xml:"description"`
-	PubDate     string   `xml:"pubDate"`
-	Language    string   `xml:"language"`
-	Version     string   `xml:"wxr_version"`
-	SiteURL     string   `xml:"base_site_url"`
-	BlogURL     string   `xml:"base_blog_url"`
-	Authors     []Author `xmls:"author"`
+	Title       string     `xml:"title"`
+	Link        string     `xml:"link"`
+	Description string     `xml:"description"`
+	PubDate     string     `xml:"pubDate"`
+	Language    string     `xml:"language"`
+	Version     string     `xml:"wxr_version"`
+	SiteURL     string     `xml:"base_site_url"`
+	BlogURL     string     `xml:"base_blog_url"`
+	Authors     []Author   `xml:"author"`
+	Categories  []Category `xml:"category"`
+	Tags        []Tag      `xml:"tag"`
+	Generator   string     `xml:"generator"`
+	Items       []Item     `xml:"item"`
 }
 
 // Author contains the author information.
@@ -30,6 +34,65 @@ type Author struct {
 	DisplayName string `xml:"author_display_name"`
 	FirstName   string `xml:"author_first_name"`
 	LastName    string `xml:"author_last_name"`
+}
+
+// Category contains the available categories information.
+type Category struct {
+	ID       string `xml:"term_id"`
+	NiceName string `xml:"category_nicename"`
+	Parent   string `xml:"category_parent"`
+	Name     string `xml:"cat_name"`
+}
+
+// Tag contins the avilable information for a given tag.
+type Tag struct {
+	ID   string `xml:"term_id"`
+	Slug string `xml:"tag_slug"`
+	Name string `xml:"tag_name"`
+}
+
+// Item contains the blog entries.
+type Item struct {
+	ID                string           `xml:"post_id"`
+	Title             string           `xml:"title"`
+	Link              string           `xml:"link"`
+	PublicationDate   string           `xml:"pubDate"`
+	Creator           string           `xml:"creator"`
+	GUID              string           `xml:"guid"`
+	Description       string           `xml:"description"`
+	PostDate          string           `xml:"post_date"`
+	PostDateGMT       string           `xml:"post_date_gmt"`
+	CommentStatus     string           `xml:"comment_status"`
+	PingStatus        string           `xml:"ping_status"`
+	Status            string           `xml:"status"`
+	MenuOrder         string           `xml:"menu_order"`
+	PostName          string           `xml:"post_name"`
+	PostParentID      string           `xml:"post_parent"`
+	PostType          string           `xml:"post_type"`
+	PostPassword      string           `xml:"post_password"`
+	IsSticky          string           `xml:"is_sticky"`
+	AttachmentURL     string           `xml:"attachment_url"`
+	CategoriesAndTags []CategoryAndTag `xml:"category"`
+	PostMetas         []PostMeta       `xml:"postmeta"`
+}
+
+// CategoryAndTag contains post categories and tags.
+type CategoryAndTag struct {
+	Value    string `xml:",chardata"`
+	Domain   string `xml:"domain,attr"`
+	NiceName string `xml:"nicename,attr"`
+}
+
+// Tags returns the tags avaialble.
+func (i Item) Tags() string {
+	// TODO(xllora) Join the tags for proper foormating.
+	return "not implemented"
+}
+
+// PostMeta contains post meta info in form of key value pairs.
+type PostMeta struct {
+	Key   string `xml:"meta_key"`
+	Value string `xml:"meta_value"`
 }
 
 // ToMarkDown converts a XML export string into the corresponding WPExport type.
