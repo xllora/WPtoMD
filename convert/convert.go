@@ -2,7 +2,11 @@
 // and return a collection of data structures containing the exported data.
 package convert
 
-import "encoding/xml"
+import (
+	"encoding/xml"
+	"fmt"
+	"strings"
+)
 
 // WPExport contains the exported data.
 type WPExport struct {
@@ -85,8 +89,34 @@ type CategoryAndTag struct {
 
 // Tags returns the tags avaialble.
 func (i Item) Tags() string {
-	// TODO(xllora) Join the tags for proper foormating.
-	return "not implemented"
+	var tags []string
+	for _, t := range i.CategoriesAndTags {
+		if t.Domain == "post_tag" {
+			tags = append(tags, fmt.Sprintf("\"%s\"", strings.TrimSpace(t.Value)))
+		}
+	}
+	if tags == nil {
+		return ""
+	}
+	return fmt.Sprintf(" %s ", strings.Join(tags, ", "))
+}
+
+// Categories returns the tags avaialble.
+func (i Item) Categories(prelude, pre, sep, post, ending string) string {
+	var cats []string
+	for _, t := range i.CategoriesAndTags {
+		if t.Domain == "category" {
+			cats = append(cats, fmt.Sprintf("\"%s\"", strings.TrimSpace(t.Value)))
+		}
+	}
+	if cats == nil {
+		return ""
+	}
+	return fmt.Sprintf("%s%s%s%s",
+		prelude,
+		pre,
+		strings.Join(cats, strings.Join([]string{sep, post, pre}, "")),
+		ending)
 }
 
 // PostMeta contains post meta info in form of key value pairs.

@@ -5,7 +5,7 @@ package markdown
 import (
 	"bytes"
 	"errors"
-	"html/template"
+	"text/template"
 
 	"github.com/xllora/WPtoMD/convert"
 )
@@ -27,18 +27,36 @@ var (
 	frontMatterTOML *template.Template
 	frontMatterYAML *template.Template
 
-	jsonTemplate = ``
+	jsonTemplate = `{
+    "title": "{{.Title}}",
+    "description": "{{.Description}}",
+    "tags": [{{.Tags}}],
+    "date": "{{.PublicationDate}}",
+    "categories": [{{.Categories "\n" "\t" "," "\n" "\n    " }}],
+    "slug": "{{.PostName}}",
+}
+`
 
 	tomlTemplate = `+++
 title = "{{.Title}}"
 description = "{{.Description}}"
 tag = [{{.Tags}}]
 date = "{{.PublicationDate}}"
-categories = []
+categories = [{{.Categories "\n" "\t" "," "\n" "\n" }}]
 slug = "{{.PostName}}"
-+++`
++++
+`
 
-	yamlTemplate = ``
+	yamlTemplate = `---
+title: "{{.Title}}"
+description: "{{.Description}}"
+tags: [{{.Tags}}]
+lastmod: {{.PostDate}}
+date: "{{.PublicationDate}}"
+categories:{{.Categories "\n" "\t- " "" "\n" "\n" }}
+slug: "{{.PostName}}"
+---
+`
 )
 
 func init() {
